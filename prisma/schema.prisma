@@ -13,23 +13,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id                    Int      @id @default(autoincrement()) 
-  email                 String   @unique 
-  username              String   @unique
+model User {
+  id                    Int       @id @default(autoincrement())
+  username              String    @unique
+  email                 String    @unique
   password              String
   verifyCode            String
-  isVerified            Boolean  @default(false)
-  verifyCodeExpiry      DateTime 
-  isAcceptingMessage    Boolean  @default(true)
-  message Message[]
+  isVerified            Boolean   @default(false)
+  verifyCodeExpiry      DateTime
+  isAcceptingMessages   Boolean   @default(true)
+  messages              Message[]
 }
 
-model Message{
-  id        Int      @id @default(autoincrement())
+model Message {
+  id        Int       @id @default(autoincrement())
   content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
+  createdAt DateTime  @default(now())
+  user      User?     @relation(fields: [userId], references: [id])
+  userId    Int?      // This is a foreign key
 }
