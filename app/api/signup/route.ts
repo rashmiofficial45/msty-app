@@ -1,12 +1,11 @@
 import prisma from "@/prisma/db";
 import bcrypt from "bcrypt";
 import { NextRequest , NextResponse } from "next/server";
-import {signUpSchema} from "@/schema/signUpSchema"
 import sendVerificationEmail from "@/helpers/sendVerificationEmail"
 
 export async function POST(req: NextRequest) {
     try {
-        const { username, email, password } = await signUpSchema.parse(req.body);
+        const { username, email, password } = await req.json();
         const existingUserVerifiedByUsername =  await prisma.user.findFirst({
             where: {
                 username,
@@ -90,7 +89,7 @@ export async function POST(req: NextRequest) {
         });
         //send verification email
     } catch (error) {
-        console.error("Error registering user");
+        console.log("Error registering user",error);
         return NextResponse.json({ 
             success: false,
             error: "Error registering user",
