@@ -1,8 +1,15 @@
 import prisma from "@/prisma/db";
 import { NextRequest , NextResponse } from "next/server";
+import { verifySchema } from "@/schema/verifySchema";
+
 export async function POST(req:NextRequest){
     try {
-        const {username , code}= await req.json()
+        const body = await req.json()
+        const parsedSchema=verifySchema.safeParse(body)
+        if(!parsedSchema.success){
+            return NextResponse.json({success:false, message:"Invalid request"})
+        }
+        const {username,code} = parsedSchema.data
         console.log(username , code)
         const decodedUser = decodeURIComponent(username)
         const user = await prisma.user.findUnique({

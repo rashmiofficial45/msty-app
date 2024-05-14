@@ -2,11 +2,28 @@ import prisma from "@/prisma/db";
 import bcrypt from "bcrypt";
 import { NextRequest , NextResponse } from "next/server";
 import sendVerificationEmail from "@/helpers/sendVerificationEmail"
+import { signUpSchema } from "@/schema/signUpSchema";
 
 export async function POST(req: NextRequest) {
     try {
-        const { username, email, password } = await req.json();
-        const existingUserVerifiedByUsername =  await prisma.user.findFirst({
+        const body =await req.json() //Needed
+        const parsed = signUpSchema.safeParse(body); // Validate the data
+
+    if (!parsed.success) {
+      // Handle validation errors
+      return NextResponse.json(
+        {
+          success: false,
+          errors: parsed.error.errors,
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const { username, email, password } = parsed.data; // Access validated data
+        const existingUserVerifiedByUsername =  await prisma.user.findUnique({
             where: {
                 username,
                 isVerified: true,

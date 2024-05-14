@@ -1,7 +1,13 @@
 import prisma from "@/prisma/db";
 // import { getServerSession } from "next-auth";
+import { messageSchema } from "@/schema/messageSchema";
 export async function POST(req:Request){
-    const {username , content} = await req.json()
+    const body = await req.json()
+    const parsedMessage = messageSchema.safeParse(body)
+    if (!parsedMessage.success){
+        return Response.json("message is required", {status:400})
+    }
+    const {username, content} = parsedMessage.data
     // const session =await getServerSession()
     // const user = session?.user
     // if (!session || !session.user){
