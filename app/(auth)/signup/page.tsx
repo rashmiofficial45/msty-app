@@ -5,7 +5,6 @@ import { z } from "zod";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
-import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { signUpSchema } from "@/schema/signUpSchema";
