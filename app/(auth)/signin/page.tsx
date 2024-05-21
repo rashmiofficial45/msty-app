@@ -5,7 +5,6 @@ import { z } from "zod";
 import Link from "next/link";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { signUpSchema } from "@/schema/signUpSchema";
 import {
   Form,
   FormControl,

@@ -9,23 +9,22 @@ export const authOptions: NextAuthOptions = {
             id: "credentials",
             name: 'Credentials',
             credentials: {
-                email: { label: "Email", type: "text", placeholder: "jsmith" },
+                identifier: { label: "Email / Username", type: "text" },
                 password: { label: "Password", type: "password" }
-            },
+              },
             async authorize(credentials: any): Promise<any> {
                 try {
-                    const user = await prisma.user.findUnique({
+                    if (!credentials || !credentials.identifier || !credentials.password) {
+                        throw new Error("Missing credentials");
+                      }
+                      const user = await prisma.user.findFirst({
                         where: {
-                            email: credentials.email
+                            OR: [
+                                { username: credentials.identifier },
+                                { email: credentials.identifier }
+                            ]
                         }
-                    })
-                    if (!user) {
-                        const user = await prisma.user.findUnique({
-                            where: {
-                                username: credentials.email
-                            }
-                        })
-                    }
+                    });
                     if (!user) {
                         throw new Error('User not found');
                     }
@@ -48,7 +47,7 @@ export const authOptions: NextAuthOptions = {
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
-                token.isVerified = user.isVerified
+                token.isVerified = user.isVerified 
                 token.username= user.username
                 token.isAcceptingMessages = user.isAcceptingMessages
             }
@@ -64,11 +63,8 @@ export const authOptions: NextAuthOptions = {
            return session
         }
     },
-    pages:{
-        signIn:'/signin'
-    },
-    session:{
-        strategy:"jwt"
+    pages: {
+        signIn: '/signin'
     },
     secret: process.env.NEXTAUTH_SECRET
     
