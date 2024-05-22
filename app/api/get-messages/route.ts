@@ -12,7 +12,6 @@ export async function GET(req:Request){
     const userId = user.id
     
     try {
-        
         const userWithMessage = await prisma.user.findUnique({
             where: { id: Number(userId) }, // Assuming userId is the string ID of the user
             include: {
@@ -21,10 +20,16 @@ export async function GET(req:Request){
               }
             }
           });
-    if (!userWithMessage || userWithMessage.messages.length === 0) {
+    if (!userWithMessage) {
         return Response.json(
-          { message: 'User not found', success: false },
+          { message: 'No Messages found', success: false },
           { status: 404 }
+        );
+      }
+    if (userWithMessage.messages.length === 0) {
+        return Response.json(
+          { message: 'No messages to display', success: true },
+          { status: 200 }
         );
       }
   

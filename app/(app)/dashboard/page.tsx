@@ -19,6 +19,8 @@ export interface Message {
   content: string;
   createdAt: Date;
 }
+
+
 function UserDashboard() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,8 +28,8 @@ function UserDashboard() {
 
   const { toast } = useToast();
 
-  const handleDeleteMessage = (messageId: string) => {
-    setMessages(messages.filter((message) => message.id !== Number(messageId)));
+  const handleDeleteMessage = (messageId: number) => {
+    setMessages(messages.filter((message) => message.id !== (messageId)));
   };
 
   const { data: session } = useSession();
@@ -84,7 +86,7 @@ function UserDashboard() {
         setIsSwitchLoading(false);
       }
     },
-    [setIsLoading, setMessages, toast]
+    [setIsLoading, setMessages, toast ]
   );
 
   // Fetch initial state from the server

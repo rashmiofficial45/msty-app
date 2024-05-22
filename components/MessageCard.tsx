@@ -23,7 +23,7 @@ import { ApiResponse } from '@/types/ApiResponse';
 
 type MessageCardProps = {
   message: Message;
-  onMessageDelete: (messageId: string) => void;
+  onMessageDelete: (messageId: number) => void;
 };
 
 export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
@@ -34,11 +34,12 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
       const response = await axios.delete<ApiResponse>(
         `/api/delete-message/${message.id}`
       );
-      toast({
-        title: response.data.message,
-      });
-      onMessageDelete(String(message.id));
-
+      if (response.data.success) { // Check for success response
+        toast({
+          title: response.data.message,
+        });
+        onMessageDelete(message.id); // Call onMessageDelete after successful deletion
+      }
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast({

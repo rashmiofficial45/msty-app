@@ -8,11 +8,6 @@ export async function POST(req:Request){
         return Response.json("message is required", {status:400})
     }
     const {username, content} = parsedMessage.data
-    // const session =await getServerSession()
-    // const user = session?.user
-    // if (!session || !session.user){
-    //     return Response.json("user is not logged in", {status:400})
-    // }
     try {
         const user = await prisma.user.findUnique({
             where:{
