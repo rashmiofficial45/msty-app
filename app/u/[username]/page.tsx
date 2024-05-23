@@ -25,47 +25,51 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { messageSchema } from '@/schema/messageSchema';
 
-const specialChar = '||';
+// const specialChar = '||';
 
-const parseStringMessages = (messageString: string): string[] => {
-  return messageString.split(specialChar);
-};
+// const parseStringMessages = (messageString: string): string[] => {
+//   return messageString.split(specialChar);
+// };
 
-const initialMessageString =
-  "What's your favorite movie?||Do you have any pets?||What's your dream job?";
+// const initialMessageString =
+//   "What's your favorite movie?||Do you have any pets?||What's your dream job?";
 
 export default function SendMessage() {
   const params = useParams<{ username: string }>();
   const username = params.username;
 
-  const {
-    complete,
-    completion,
-    isLoading: isSuggestLoading,
-    error,
-  } = useCompletion({
-    api: '/api/suggest-messages',
-    initialCompletion: initialMessageString,
-  });
+  // const {
+  //   complete,
+  //   completion,
+  //   isLoading: isSuggestLoading,
+  //   error,
+  // } = useCompletion({
+  //   api: '/api/suggest-messages',
+  //   initialCompletion: initialMessageString,
+  // });
 
   const form = useForm<z.infer<typeof messageSchema>>({
     resolver: zodResolver(messageSchema),
+    defaultValues: {  //default values are necessary
+      content: '',
+      username: username,
+    },
   });
 
   const messageContent = form.watch('content');
 
-  const handleMessageClick = (message: string) => {
-    form.setValue('content', message);
-  };
+  // const handleMessageClick = (message: string) => {
+  //   form.setValue('content', message);
+  // };
 
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof messageSchema>) => {
     setIsLoading(true);
     try {
-      const response = await axios.post<ApiResponse>('/api/send-message', {
+      const response = await axios.post<ApiResponse>('/api/send-messages', {
         ...data,
-        username,
+        username
       });
 
       toast({
@@ -86,14 +90,14 @@ export default function SendMessage() {
     }
   };
 
-  const fetchSuggestedMessages = async () => {
-    try {
-      complete('');
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-      // Handle error appropriately
-    }
-  };
+  // const fetchSuggestedMessages = async () => {
+  //   try {
+  //     complete('');
+  //   } catch (error) {
+  //     console.error('Error fetching messages:', error);
+  //     // Handle error appropriately
+  //   }
+  // };
 
   return (
     <div className="container mx-auto my-8 p-6 bg-white rounded max-w-4xl">
@@ -134,7 +138,7 @@ export default function SendMessage() {
         </form>
       </Form>
 
-      <div className="space-y-4 my-8">
+      {/* <div className="space-y-4 my-8">
         <div className="space-y-2">
           <Button
             onClick={fetchSuggestedMessages}
@@ -166,7 +170,7 @@ export default function SendMessage() {
             )}
           </CardContent>
         </Card>
-      </div>
+      </div> */}
       <Separator className="my-6" />
       <div className="text-center">
         <div className="mb-4">Get Your Message Board</div>
